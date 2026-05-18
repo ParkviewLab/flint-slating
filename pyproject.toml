@@ -29,6 +29,7 @@ dev = [
     "pytest-asyncio",
     "httpx",
     "pip-licenses",
+    "ruff",
 ]
 
 [build-system]
