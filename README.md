@@ -169,3 +169,10 @@ The release workflow refuses tags that don't match `pyproject.toml`'s
 
 [MIT](LICENSE). flint-slating only depends on permissive-licensed
 libraries; the CI `license-check` job enforces this on every PR.
+
+torch and torchvision are pinned to the
+[CPU-only PyTorch wheel index](https://download.pytorch.org/whl/cpu)
+so the distribution does not bundle NVIDIA's proprietary CUDA
+libraries. Inference runs on CPU on Linux/Windows and on MPS (Metal)
+on Apple Silicon. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
+for the per-dependency license breakdown.
