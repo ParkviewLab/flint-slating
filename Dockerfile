@@ -20,12 +20,15 @@ COPY src/ src/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-dev
 
-# Pre-fetch Docling's layout model so the first user-facing call is hot.
-# Failure here is not fatal — the runtime will re-download on first use.
-ENV DOCLING_ARTIFACTS_PATH=/opt/docling-models
-RUN uv run python -c "from docling.document_converter import DocumentConverter; DocumentConverter()" || true
-
+# Docling lays its layout model down on first user-facing call. We do
+# NOT pre-fetch it at build time — that step executes Python code under
+# arm64 QEMU emulation when buildx is producing the multi-arch image,
+# which dominated wall-clock (~9 min and counting on v0.1.0). The first
+# request after container start pays the download cost instead.
+# DOCLING_ARTIFACTS_PATH points the cache at a stable location so an
+# operator can pre-populate it via volume mount if they want a hot start.
 ENV PYTHONUNBUFFERED=1 \
+    DOCLING_ARTIFACTS_PATH=/opt/docling-models \
     OUTPUT_ROOT=/data/output \
     CACHE_ROOT=/data/cache \
     PORT=35833 \

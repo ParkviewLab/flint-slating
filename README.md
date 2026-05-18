@@ -142,8 +142,11 @@ result is ready and returns it directly.
 ## Resource notes
 
 - Docling downloads a ~200–500 MB layout model on first use. The
-  container image pre-fetches it at build time; the daemon warms it at
-  startup (`stdio_entry` / HTTP lifespan).
+  container image does **not** pre-fetch it (pre-fetching dominated
+  multi-arch build time under QEMU); the daemon warms it on startup,
+  and the first user-facing call pays the download. Operators can
+  populate `DOCLING_ARTIFACTS_PATH` (default `/opt/docling-models` in
+  the container) via volume mount for a hot start.
 - pypdf, pdfplumber, and the URL / base64 paths are fast and have no ML
   overhead — use `pdf_info`, `pdf_toc`, `pdf_read_text`, and
   `pdf_find_tables` whenever Markdown isn't strictly needed.
