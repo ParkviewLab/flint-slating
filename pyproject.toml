@@ -19,6 +19,11 @@ dependencies = [
     "pypdf>=5.0",
     "pdfplumber>=0.11",
     "httpx",
+    # torch / torchvision are transitive (via docling), but listed here so
+    # [tool.uv.sources] below can pin them to the CPU-only wheel index.
+    # uv only honors source overrides for direct project deps.
+    "torch",
+    "torchvision",
 ]
 
 [project.scripts]
@@ -39,6 +44,21 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/flint_slating"]
+
+# Pin torch + torchvision to PyTorch's CPU-only wheel index. This drops
+# the entire NVIDIA CUDA library family (nvidia-cublas, nvidia-cudnn, …)
+# out of the dependency tree on Linux, removing proprietary NVIDIA blobs
+# from the published distribution. Docling's layout-model inference
+# falls back to CPU on Linux/Windows; Apple Silicon keeps using MPS
+# (which doesn't depend on torch's CUDA wheels). See THIRD_PARTY_LICENSES.md.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
