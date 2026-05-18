@@ -1,0 +1,54 @@
+# flint-slating — example compose stack.
+#
+# Copy this file, edit the CHANGE-ME values, then:
+#   docker compose up -d
+#
+# To upgrade:
+#   docker compose pull && docker compose up -d
+
+services:
+  flint-slating:
+    image: ghcr.io/parkviewlab/flint-slating:latest
+    container_name: flint-slating
+    restart: unless-stopped
+
+    ports:
+      - "35833:35833"
+
+    environment:
+      OUTPUT_ROOT: /data/output
+      CACHE_ROOT: /data/cache
+
+      # Auto-purge finished job dirs older than this many days. 0 disables.
+      OUTPUT_EXPIRY_DAYS: "7"
+
+      # CHANGE-ME: the externally-reachable URL of this daemon. Used to
+      # build absolute `output_url` values returned by the job tools.
+      # Examples:
+      #   PUBLIC_BASE_URL: "http://192.168.1.50:35833"
+      #   PUBLIC_BASE_URL: "https://flint.example.com"
+      PUBLIC_BASE_URL: "http://CHANGE-ME:35833"
+
+      # Docling layout model cache — baked into the image at build time.
+      DOCLING_ARTIFACTS_PATH: /opt/docling-models
+
+      # Set to "true" to enable Docling OCR (requires tesseract; not in
+      # this image — extend the Dockerfile or use a mount).
+      ENABLE_OCR: "false"
+
+    volumes:
+      # Default: a docker-managed named volume.
+      - flint-slating-data:/data
+
+      # OR — bind-mount a host directory:
+      # - /srv/flint-slating:/data
+
+      # If your PDFs live on the host filesystem and you want to feed
+      # them in via `source.path`, mount that read-only:
+      # - /srv/pdf-corpus:/pdfs:ro
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  flint-slating-data:

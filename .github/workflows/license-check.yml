@@ -1,0 +1,31 @@
+name: License check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync deps (including dev for pip-licenses)
+        run: uv sync
+
+      # Permissive allowlist. AGPL/GPL/LGPL/MPL are rejected — flint-slating
+      # has to stay shippable under MIT, and PyMuPDF / Unstructured / Marker
+      # are the trapdoors we explicitly designed this stack to avoid.
+      - name: Check transitive licenses
+        run: |
+          uv run pip-licenses \
+            --from=mixed \
+            --allow-only="MIT;MIT License;BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Apache Software License;ISC;ISC License (ISCL);Python Software Foundation License;Public Domain;The Unlicense (Unlicense)"
