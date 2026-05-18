@@ -35,5 +35,6 @@ EXPOSE 35833
 VOLUME ["/data"]
 
 # Container always runs the HTTP transport — stdio across a container
-# boundary doesn't make sense.
-CMD ["uv", "run", "python", "-m", "flint_slating", "serve"]
+# boundary doesn't make sense. HTTP is the default; --transport http is
+# explicit so anyone reading the Dockerfile knows what mode it runs in.
+CMD ["uv", "run", "python", "-m", "flint_slating", "--transport", "http"]
