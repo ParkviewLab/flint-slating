@@ -1,0 +1,2 @@
+# flint-slating
+mcp server
