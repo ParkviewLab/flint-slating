@@ -567,6 +567,7 @@ name = "flint-slating"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "anyio" },
     { name = "docling" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -589,6 +590,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "anyio" },
     { name = "docling", specifier = ">=2.0" },
     { name = "fastapi" },
     { name = "httpx" },

@@ -9,6 +9,7 @@ license-files = ["LICENSE"]
 authors = [{ name = "Parkview Lab" }]
 dependencies = [
     "mcp[cli]>=1.27.0",
+    "anyio",
     "fastapi",
     "uvicorn[standard]",
     "starlette",

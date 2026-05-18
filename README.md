@@ -25,38 +25,19 @@ copyleft transitive deps.
 
 ## Transports
 
-Two transports off the same MCP server:
+Two transports off the same MCP server, selected via `--transport`:
 
 | Transport | Run via | Use case |
 |---|---|---|
-| **stdio** | `uvx flint-slating` (default) | The standard MCP integration shape — drop into `claude_desktop_config.json` or any `mcp.json`. |
-| **Streamable-HTTP** | `uvx flint-slating serve`, or the container image | Long-lived local daemon, or shared service in a docker stack. |
+| **Streamable-HTTP** (default) | `uvx flint-slating` or `--transport http` | Long-lived local daemon, container, or shared service. |
+| **stdio** | `uvx flint-slating --transport stdio` | The standard MCP integration shape — drop into `claude_desktop_config.json` or any `mcp.json`. |
 
 ## Run
 
-### One-off via `uvx` (stdio)
+### As an HTTP daemon (default)
 
 ```bash
-uvx flint-slating
-```
-
-Configures itself for stdio MCP — wire it into Claude Code's MCP config:
-
-```json
-{
-  "mcpServers": {
-    "flint-slating": {
-      "command": "uvx",
-      "args": ["flint-slating"]
-    }
-  }
-}
-```
-
-### As an HTTP daemon
-
-```bash
-uvx flint-slating serve              # listens on PORT (default 35833)
+uvx flint-slating                    # listens on PORT (default 35833)
 curl http://127.0.0.1:35833/health
 ```
 
@@ -64,7 +45,26 @@ Or pin it:
 
 ```bash
 uv tool install flint-slating
-flint-slating serve
+flint-slating
+```
+
+### As a stdio MCP server
+
+```bash
+uvx flint-slating --transport stdio
+```
+
+Wire into Claude Code's MCP config:
+
+```json
+{
+  "mcpServers": {
+    "flint-slating": {
+      "command": "uvx",
+      "args": ["flint-slating", "--transport", "stdio"]
+    }
+  }
+}
 ```
 
 ### Docker
