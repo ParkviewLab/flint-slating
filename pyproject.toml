@@ -4,7 +4,7 @@
 
 [project]
 name = "flint-slating"
-version = "0.1.5.dev0"
+version = "0.1.5.dev1"
 description = "MCP server that reads PDFs (metadata, TOC, Markdown, text, images, tables) for downstream LLM consumers."
 readme = "README.md"
 requires-python = ">=3.13"
