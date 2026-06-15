@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Coverage for the pypdf-backed reader functions.
 
 Docling-backed paths are tested separately (`-m docling`) because they

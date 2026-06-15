@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Per-page table extraction via pdfplumber → Markdown.
 
 pdfplumber is MIT-licensed and built on pdfminer.six (also MIT). It's
