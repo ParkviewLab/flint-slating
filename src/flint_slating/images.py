@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Image listing and extraction.
 
 Backed by pypdf — Docling's image objects don't carry the raw stream
@@ -70,8 +74,7 @@ def extract_image(
         raise PdfError("image has no data")
     if len(raw) > config.MAX_IMAGE_EXTRACT_BYTES:
         raise PdfError(
-            f"image size {len(raw)} exceeds MAX_IMAGE_EXTRACT_BYTES "
-            f"({config.MAX_IMAGE_EXTRACT_BYTES})"
+            f"image size {len(raw)} exceeds MAX_IMAGE_EXTRACT_BYTES ({config.MAX_IMAGE_EXTRACT_BYTES})"
         )
     return {
         "page": page,

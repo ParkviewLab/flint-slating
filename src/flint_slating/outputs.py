@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Per-job output directory layout + path-safe artifact reads.
 
 Each job gets `config.OUTPUT_ROOT/{job_id}/` with:

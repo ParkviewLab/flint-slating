@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+
+SPDX-License-Identifier: MIT OR Apache-2.0
+-->
+
 # flint-slating
 
 MCP server that reads PDFs and exposes them to LLM consumers as
@@ -165,14 +171,44 @@ git push origin v0.1.0
 The release workflow refuses tags that don't match `pyproject.toml`'s
 `version`, or that aren't on `origin/main`.
 
+### Commit message convention
+
+After the publish jobs, a **changelog** job generates the new `CHANGELOG.md` section — an LLM-written "Highlights" paragraph plus a [`git-cliff`](https://git-cliff.org/) categorized commit list — commits it back to `main`, and creates the GitHub Release with the same content as its body. Categorization uses [Conventional Commits](https://www.conventionalcommits.org/) prefixes (see [`cliff.toml`](cliff.toml)):
+
+| Prefix | Section | Notes |
+|---|---|---|
+| `feat:` | Features | user-visible |
+| `fix:` | Bug fixes | user-visible |
+| `perf:` | Performance | user-visible |
+| `refactor:` | Refactor | |
+| `docs:` | Docs | |
+| `test:` | Tests | |
+| `chore:` / `ci:` / `build:` / `style:` | _(dropped)_ | not surfaced in CHANGELOG |
+
+Squash-merge PRs use the PR title as the commit subject — so the **PR title** is what needs the prefix. Commits without a recognised prefix are silently dropped from the CHANGELOG (still in git history). The "Highlights" paragraph requires the `ANTHROPIC_API_KEY` org-level secret; if the LLM call fails, a placeholder lands and the release still ships.
+
 ## License
 
-[MIT](LICENSE). flint-slating only depends on permissive-licensed
-libraries; the CI `license-check` job enforces this on every PR.
+Licensed under either of
 
-torch and torchvision are pinned to the
-[CPU-only PyTorch wheel index](https://download.pytorch.org/whl/cpu)
-so the distribution does not bundle NVIDIA's proprietary CUDA
-libraries. Inference runs on CPU on Linux/Windows and on MPS (Metal)
-on Apple Silicon. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
-for the per-dependency license breakdown.
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+  <http://www.apache.org/licenses/LICENSE-2.0>), or
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or
+  <http://opensource.org/licenses/MIT>)
+
+at your option. In SPDX terms: `MIT OR Apache-2.0`.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in this work by you shall be dual-licensed as above, without any
+additional terms or conditions. See [LICENSING.md](LICENSING.md).
+
+flint-slating only depends on permissive-licensed libraries; the CI
+`license-check` job enforces this on every PR. torch and torchvision are pinned
+to the [CPU-only PyTorch wheel index](https://download.pytorch.org/whl/cpu) so
+the distribution does not bundle NVIDIA's proprietary CUDA libraries. Inference
+runs on CPU on Linux/Windows and on MPS (Metal) on Apple Silicon. See
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for the per-dependency
+license breakdown.
+
+---
+<sub>© 2026 Gary Frattarola · Licensed under [MIT](LICENSE-MIT) OR [Apache-2.0](LICENSE-APACHE) · part of [ParkviewLab](https://github.com/ParkviewLab)</sub>

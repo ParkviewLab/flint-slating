@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Transport-agnostic MCP `Server` instance.
 
 Both the stdio entry (`stdio_entry.py`) and the HTTP routes (`routes.py`)
