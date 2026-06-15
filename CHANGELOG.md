@@ -29,6 +29,12 @@ section here, and uses the same content as the GitHub Release body.
 
 ## [Unreleased]
 
+## [v0.1.5] - 2026-06-14
+
+### Highlights
+
+This release is housekeeping: the project is relicensed from MIT-only to the Rust-convention `MIT OR Apache-2.0` dual license, with per-file SPDX headers, REUSE compliance, and updated packaging metadata. CI also gains automated CHANGELOG and GitHub Release generation on tag push, with the existing v0.1.0–v0.1.4 entries backfilled. No runtime behavior changes.
+
 ## [v0.1.4] - 2026-05-18
 
 ### Highlights
