@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Tool dispatch — verify the JSON shapes the MCP transport will emit."""
 
 from __future__ import annotations
@@ -33,9 +37,7 @@ async def test_pdf_toc_dispatch(tiny_pdf_path):
 @pytest.mark.asyncio
 async def test_pdf_read_text_dispatch_via_bytes(tiny_pdf_bytes):
     b64 = base64.b64encode(tiny_pdf_bytes).decode("ascii")
-    out = _text_payload(
-        await tools.dispatch("pdf_read_text", {"source": {"bytes_b64": b64}, "pages": [1]})
-    )
+    out = _text_payload(await tools.dispatch("pdf_read_text", {"source": {"bytes_b64": b64}, "pages": [1]}))
     assert out["page_count"] == 2
     assert len(out["pages"]) == 1
 

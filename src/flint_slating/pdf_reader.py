@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """PDF reading primitives — pypdf for fast structural ops, Docling for
 high-quality Markdown.
 
@@ -253,8 +257,10 @@ def _per_page_chunks(document: Any) -> Iterable[dict[str, Any]]:
     renames.
     """
     pages_attr = getattr(document, "pages", {}) or {}
-    page_nos = sorted(pages_attr.keys()) if isinstance(pages_attr, dict) else range(
-        1, _docling_page_count(document) + 1
+    page_nos = (
+        sorted(pages_attr.keys())
+        if isinstance(pages_attr, dict)
+        else range(1, _docling_page_count(document) + 1)
     )
     for pno in page_nos:
         # Per-page markdown

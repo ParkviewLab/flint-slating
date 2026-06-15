@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Pydantic models shared between MCP tool dispatch and HTTP routes.
 
 Kept narrow: only what's actually exchanged at the public boundary.

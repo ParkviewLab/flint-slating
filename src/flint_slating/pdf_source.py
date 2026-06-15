@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """Resolve a `PdfSource` (path | url | base64) to a local file on disk.
 
 Every MCP tool that takes a PDF calls `resolve(arguments)` first and
@@ -109,9 +113,7 @@ def _resolve_url(url: str) -> Resolved:
                 for chunk in resp.iter_bytes(chunk_size=64 * 1024):
                     size += len(chunk)
                     if size > config.MAX_URL_PDF_BYTES:
-                        raise SourceError(
-                            f"URL body exceeds MAX_URL_PDF_BYTES ({config.MAX_URL_PDF_BYTES})"
-                        )
+                        raise SourceError(f"URL body exceeds MAX_URL_PDF_BYTES ({config.MAX_URL_PDF_BYTES})")
                     hasher.update(chunk)
                     f.write(chunk)
     except httpx.HTTPError as e:
@@ -140,8 +142,7 @@ def _resolve_bytes(b64: str, filename: str) -> Resolved:
         raise SourceError("bytes_b64 decoded to zero bytes")
     if len(raw) > config.MAX_INLINE_PDF_BYTES:
         raise SourceError(
-            f"bytes_b64 decoded size {len(raw)} exceeds MAX_INLINE_PDF_BYTES "
-            f"({config.MAX_INLINE_PDF_BYTES})"
+            f"bytes_b64 decoded size {len(raw)} exceeds MAX_INLINE_PDF_BYTES ({config.MAX_INLINE_PDF_BYTES})"
         )
     if not raw.startswith(PDF_MAGIC):
         raise SourceError("bytes_b64 does not look like a PDF (missing %PDF- magic)")

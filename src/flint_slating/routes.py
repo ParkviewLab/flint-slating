@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Gary Frattarola <garyf@parkviewlab.ai>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 """HTTP routes for the Streamable-HTTP transport.
 
 Adds `/health`, `/admin/version`, and `/outputs/{job_id}/*` alongside
