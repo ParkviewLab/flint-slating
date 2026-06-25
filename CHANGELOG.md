@@ -29,6 +29,16 @@ section here, and uses the same content as the GitHub Release body.
 
 ## [Unreleased]
 
+## [v0.1.6] - 2026-06-24
+
+### Highlights
+
+This is a maintenance release that bumps lagging GitHub Actions pins to their Node 24 floors, with no user-facing behavior changes.
+
+### Docs
+
+- V0.1.5 [skip ci] (e37d96f)
+
 ## [v0.1.5] - 2026-06-14
 
 ### Highlights
