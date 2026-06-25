@@ -507,7 +507,7 @@ wheels = [
 
 [[package]]
 name = "flint-slating"
-version = "0.1.6.dev0"
+version = "0.1.6"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
