@@ -159,8 +159,7 @@ result is ready and returns it directly.
 
 ## Releasing
 
-Tag-driven CI publishes to both PyPI (`flint-slating`) and GHCR
-(`ghcr.io/parkviewlab/flint-slating`):
+Tag-driven CI publishes to both PyPI (`flint-slating`) and GHCR (`ghcr.io/parkviewlab/flint-slating`):
 
 ```bash
 # Bump version in pyproject.toml first, then:
@@ -168,8 +167,7 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The release workflow refuses tags that don't match `pyproject.toml`'s
-`version`, or that aren't on `origin/main`.
+The release workflow refuses a tag that does not match `pyproject.toml`'s `version`, that still carries a dev marker (`.devN`), that is not on `origin/main`, or that is not greater than the previous release tag.
 
 ### Commit message convention
 
