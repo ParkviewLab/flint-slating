@@ -20,6 +20,16 @@ section here, and uses the same content as the GitHub Release body.
 
 ## [Unreleased]
 
+## [v0.1.8] - 2026-09-27
+
+### Highlights
+
+This release contains no user-facing changes: it switches the project's CI and release process from squash merges and a direct back-merge to merge commits and a generated back-merge pull request, updates the version-guard and changelog workflows to pinned dev-tools v1.5.1, re-syncs the agent instruction files, and documents the new merge flow in the contributing guide.
+
+### Maintenance
+
+- Merge commits and the checked back-merge pull request (#13)
+
 ## [v0.1.7] - 2026-09-27
 
 ### Highlights
