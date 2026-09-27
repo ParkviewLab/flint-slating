@@ -159,8 +159,7 @@ result is ready and returns it directly.
 
 ## Releasing
 
-Tag-driven CI publishes to both PyPI (`flint-slating`) and GHCR
-(`ghcr.io/parkviewlab/flint-slating`):
+Tag-driven CI publishes to both PyPI (`flint-slating`) and GHCR (`ghcr.io/parkviewlab/flint-slating`):
 
 ```bash
 # Bump version in pyproject.toml first, then:
@@ -168,24 +167,27 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The release workflow refuses tags that don't match `pyproject.toml`'s
-`version`, or that aren't on `origin/main`.
+The release workflow refuses a tag that does not match `pyproject.toml`'s `version`, that still carries a dev marker (`.devN`), that is not on `origin/main`, or that is not greater than the previous release tag.
 
 ### Commit message convention
 
-After the publish jobs, a **changelog** job generates the new `CHANGELOG.md` section — an LLM-written "Highlights" paragraph plus a [`git-cliff`](https://git-cliff.org/) categorized commit list — commits it back to `main`, and creates the GitHub Release with the same content as its body. Categorization uses [Conventional Commits](https://www.conventionalcommits.org/) prefixes (see [`cliff.toml`](cliff.toml)):
+After the publish jobs, a **changelog** job generates the new `CHANGELOG.md` section — an LLM-written "Highlights" paragraph plus a categorized list written by dev-tools' `generate-changelog` — commits it back to `main`, and creates the GitHub Release with the same content as its body. Categorization uses [Conventional Commits](https://www.conventionalcommits.org/) prefixes (the full list is in the ParkviewLab handbook's `commits-and-changelogs.md`):
 
-| Prefix | Section | Notes |
+| Title | Group in the notes | Notes |
 |---|---|---|
+| any type with `!` after it (`feat!:`), or a breaking-change footer | Breaking changes | listed there once, whatever its type |
 | `feat:` | Features | user-visible |
 | `fix:` | Bug fixes | user-visible |
 | `perf:` | Performance | user-visible |
 | `refactor:` | Refactor | |
 | `docs:` | Docs | |
 | `test:` | Tests | |
-| `chore:` / `ci:` / `build:` / `style:` | _(dropped)_ | not surfaced in CHANGELOG |
+| `revert:` | Reverts | GitHub's Revert button titles a PR `Revert "…"`, which has no type |
+| `build:` / `chore:` / `ci:` / `style:` | Maintenance | |
+| any other title | Other changes | the whole title |
+| a commit with no pull request | Direct commits | its subject and short hash |
 
-Squash-merge PRs use the PR title as the commit subject — so the **PR title** is what needs the prefix. Commits without a recognised prefix are silently dropped from the CHANGELOG (still in git history). The "Highlights" paragraph requires the `ANTHROPIC_API_KEY` org-level secret; if the LLM call fails, a placeholder lands and the release still ships.
+A title without a recognised type is not dropped: it is listed whole under Other changes. So prefix your PR titles, and correct a title before the merge, since retitling afterwards does not change the commit. The groups appear in the order above, and an empty group is left out.
 
 ## License
 
