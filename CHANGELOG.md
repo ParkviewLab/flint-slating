@@ -20,6 +20,22 @@ section here, and uses the same content as the GitHub Release body.
 
 ## [Unreleased]
 
+## [v0.1.7] - 2026-09-27
+
+### Highlights
+
+This release updates locked dependencies past open security advisories — anyio to 4.15.1, cryptography to 50.0.1 and starlette to 1.7.0 — which affects the container image built from the lockfile. The remaining work is to the release machinery: the release and dev-release workflows are reassembled from the handbook's parts, with a gate that requires the version to exceed the previous release tag and to carry no dev marker, and changelog generation moves to the shared dev-tools script. As a result of that move, changelog entries with `chore:`, `ci:`, `build:` or `style:` titles now appear under Maintenance instead of being dropped, unrecognised titles are listed under Other changes, and breaking changes, reverts and direct commits get their own groups.
+
+### Bug fixes
+
+- Anyio, cryptography and starlette past their security advisories (#12)
+
+### Maintenance
+
+- Drop the shallow re-fetch from the version guard (#9)
+- Assemble the release workflows from the handbook's parts (#10)
+- Generate the changelog with dev-tools' shared script (#11)
+
 ## [v0.1.6] - 2026-06-24
 
 ### Highlights
