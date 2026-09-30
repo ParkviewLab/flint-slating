@@ -505,7 +505,7 @@ wheels = [
 
 [[package]]
 name = "flint-slating"
-version = "0.1.8"
+version = "0.1.9.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
@@ -540,7 +540,7 @@ requires-dist = [
     { name = "docling", specifier = ">=2.0" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.27.0" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.27,<2" },
     { name = "pdfplumber", specifier = ">=0.11" },
     { name = "pydantic" },
     { name = "pypdf", specifier = ">=5.0" },

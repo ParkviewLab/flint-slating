@@ -75,7 +75,7 @@ class AdminVersion(BaseModel):
     mcp_protocol_version: str
     docling_version: str
     pypdf_version: str
-    docling_artifacts_path: str
+    docling_artifacts_path: str | None
     docling_model_loaded: bool
 
 
@@ -88,7 +88,9 @@ async def admin_version() -> AdminVersion:
         mcp_protocol_version=_safe_pkg_version("mcp"),
         docling_version=_safe_pkg_version("docling"),
         pypdf_version=_safe_pkg_version("pypdf"),
-        docling_artifacts_path=str(config.DOCLING_ARTIFACTS_PATH),
+        docling_artifacts_path=(
+            str(config.DOCLING_ARTIFACTS_PATH) if config.DOCLING_ARTIFACTS_PATH else None
+        ),
         docling_model_loaded=converter_built,
     )
 

@@ -49,13 +49,19 @@ uv sync
 uv run ruff check src tests
 uv run ruff format --check src tests
 uv run ty check
-uv run pytest -m "not network and not docling" -q
+uv run pytest -m "not network and not integration and not docling" -q
+uv run --with pip-licenses pip-licenses \
+  --from=mixed \
+  --fail-on="GPL;GPL v2;GPL v3;GNU General Public License;GNU General Public License v2 (GPLv2);GNU General Public License v3 (GPLv3);AGPL;Affero;GNU Affero General Public License v3;GNU Affero General Public License v3 (AGPLv3);LGPL;GNU Lesser General Public License;GNU Lesser General Public License v2 (LGPLv2);GNU Lesser General Public License v3 (LGPLv3);GNU Library or Lesser General Public License (LGPL);SSPL;Server Side Public License" \
+  --order=license
 uvx --from "reuse[charset-normalizer]" reuse lint
 ```
 
-A PR **can't be merged until the required checks pass** (lint, format, types,
-tests, REUSE, the version guard — see the handbook's `ci.md`). Push after each
-commit. See also `python-tooling.md` and `testing.md`.
+A PR **can't be merged until the required checks pass**: `reuse`,
+`no-version-change` (the version guard), `test` (lint, format, types, tests)
+and `licenses`, on a branch up to date with `develop`; administrators are
+bound too (see the handbook's `ci.md`). Push after each commit. See also
+`python-tooling.md` and `testing.md`.
 
 ## Versioning
 
@@ -65,6 +71,6 @@ never type it on a `git tag` line — use `git bump` / `git release` from
 
 ## AI contributors
 
-Read `docs/northstar.md` first, and follow the behavioural contract in the
-handbook's `ai-collaboration.md` (notably: merging/tagging/releasing need an
+If the repo has a `docs/northstar.md`, read it first, and follow the
+behavioural contract in the handbook's `ai-collaboration.md` (notably: merging/tagging/releasing need an
 explicit, per-release go-ahead).
