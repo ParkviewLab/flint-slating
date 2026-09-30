@@ -6,7 +6,8 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 
 # Third-Party Licenses
 
-flint-slating is licensed under the [MIT License](LICENSE). It depends
+flint-slating is licensed under `MIT OR Apache-2.0`, at your option; see
+[LICENSING.md](LICENSING.md). It depends
 on third-party libraries that ship under their own licenses, summarized
 below. Every direct and transitive runtime dependency at the time of
 the current release is **permissive open source** (MIT / BSD / Apache /
@@ -83,8 +84,8 @@ Compound: `python-dateutil` (Apache + BSD), `uvloop` (Apache + MIT),
 
 MPL-2.0 is a **file-level** copyleft license: only modifications to
 MPL-licensed source files themselves carry MPL obligations.
-flint-slating uses both libraries unmodified, so the MIT distribution
-of flint-slating is unaffected.
+flint-slating uses both libraries unmodified, so the `MIT OR Apache-2.0`
+distribution of flint-slating is unaffected.
 
 ## NVIDIA proprietary libraries (Linux/amd64 only, conditional)
 
@@ -104,17 +105,22 @@ redistribution of the CUDA runtime libraries verbatim as part of an
 integrated application, provided the libraries are not modified and
 their license notices are preserved.
 
-The published flint-slating distribution **does not include any of
-these NVIDIA libraries**:
+The GHCR container image and a checkout synced with `uv sync` **do not
+include any of these NVIDIA libraries**:
 
-- The PyPI distribution and the GHCR container image pin torch to the
-  CPU-only PyTorch index (`https://download.pytorch.org/whl/cpu`).
+- Both pin torch to the CPU-only PyTorch index
+  (`https://download.pytorch.org/whl/cpu`); `uv.lock` resolves torch to
+  the CPU wheels.
 - See [`pyproject.toml`](pyproject.toml)'s `[tool.uv.sources]` and
   `[[tool.uv.index]]` entries.
 
-A user who installs flint-slating into their own environment and then
-overrides the torch source to fetch a CUDA-enabled wheel is doing so
-under NVIDIA's SLA; that's between them and NVIDIA.
+The PyPI distribution does not carry that pin: `[tool.uv.sources]` is read
+only by uv when working in a checkout, and is not part of the published
+metadata. A user who installs from PyPI (`uvx flint-slating`,
+`uv tool install flint-slating`) gets PyPI's torch, which on Linux/amd64
+pulls the NVIDIA libraries above unless torch is installed from the CPU
+index. Those libraries then ship under NVIDIA's SLA, and that is between
+that user and NVIDIA.
 
 ## Bundling notes
 

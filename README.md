@@ -26,7 +26,7 @@ Built on a permissive-license PDF stack:
 | [pdfplumber](https://github.com/jsvine/pdfplumber) | MIT | per-page table extraction |
 
 **There is no PyMuPDF, no MuPDF, no AGPL or GPL anywhere in the
-dependency tree.** A CI license-check job rejects PRs that pull in
+dependency tree.** The `licenses` job of `license-check.yml` rejects PRs that pull in
 copyleft transitive deps.
 
 ## Transports
@@ -110,7 +110,9 @@ All PDF tools take a `source` argument with one of:
 ### Hybrid sync/async
 
 `pdf_read_markdown` and `pdf_read_chunks` run inline when
-`page_count <= SYNC_PAGE_THRESHOLD` (default 20). For larger PDFs they
+the number of pages requested is at most `SYNC_PAGE_THRESHOLD` (default 20;
+all pages when `pages` is omitted, so the count is the PDF's `page_count`
+then). For larger requests they
 queue a background job and return a `job_id` — poll `get_job_status`
 until `state=="done"`, then call `get_job_result` (or, in HTTP mode,
 fetch `output_url` directly).
@@ -122,7 +124,7 @@ result is ready and returns it directly.
 ## HTTP endpoints (HTTP mode only)
 
 - `GET /health` — `{ok, version, uptime_seconds}`
-- `GET /admin/version` — package and dependency versions, Docling model status
+- `GET /admin/version` — package and dependency versions, and Docling status (`docling_model_loaded` reports whether the converter has been built, not whether a model is loaded)
 - `GET /admin/jobs` — recent job list
 - `GET /outputs/{job_id}/result.md` — finished Markdown
 - `GET /outputs/{job_id}/result.json` — finished chunked output
@@ -137,22 +139,27 @@ result is ready and returns it directly.
 | `HOST` | `0.0.0.0` | `0.0.0.0` | HTTP bind address |
 | `OUTPUT_ROOT` | `./output` | `/data/output` | Per-job output dirs |
 | `CACHE_ROOT` | `./cache` | `/data/cache` | Materialized URL / base64 PDFs |
-| `OUTPUT_EXPIRY_DAYS` | `7` | `7` | Sweep finished jobs older than N days |
+| `OUTPUT_EXPIRY_DAYS` | `7` | `7` | Hourly sweep (HTTP mode only) of job directories older than N days by directory mtime; `0` disables |
 | `MAX_INLINE_PDF_BYTES` | `25 MB` | `25 MB` | Cap on base64 upload size |
 | `MAX_URL_PDF_BYTES` | `200 MB` | `200 MB` | Cap on URL download size |
 | `SYNC_PAGE_THRESHOLD` | `20` | `20` | Inline-vs-job cutoff for Markdown conversion |
-| `DOCLING_ARTIFACTS_PATH` | `~/.cache/docling` | `/opt/docling-models` | Docling layout-model cache |
-| `ENABLE_OCR` | `false` | `false` | Enable Docling OCR (Tesseract required) |
+| `JOB_HISTORY_MAX` | `100` | `100` | Caps the job history kept and the `limit` of `/admin/jobs` |
+| `MAX_IMAGE_EXTRACT_BYTES` | `8 MiB` | `8 MiB` | Cap on the size of one image returned by `pdf_extract_image` |
+| `DOCLING_ARTIFACTS_PATH` | unset | unset | Directory of pre-downloaded Docling models; see Resource notes |
 | `PUBLIC_BASE_URL` | `http://localhost:35833` | `http://localhost:35833` | Used to build `output_url` |
 
 ## Resource notes
 
-- Docling downloads a ~200–500 MB layout model on first use. The
-  container image does **not** pre-fetch it (pre-fetching dominated
-  multi-arch build time under QEMU); the daemon warms it on startup,
-  and the first user-facing call pays the download. Operators can
-  populate `DOCLING_ARTIFACTS_PATH` (default `/opt/docling-models` in
-  the container) via volume mount for a hot start.
+- Docling downloads its layout models (~200–500 MB) on the first
+  conversion unless `DOCLING_ARTIFACTS_PATH` is set. The container image
+  does **not** pre-fetch them (pre-fetching dominated multi-arch build
+  time under QEMU), so the first Markdown conversion pays the download.
+  If `DOCLING_ARTIFACTS_PATH` is set, it must point at a directory that
+  already holds every model (`docling-tools models download -o <dir>`,
+  for instance into a mounted volume); Docling never downloads into it.
+  Default: unset.
+- OCR follows Docling's default options, which run OCR; there is no
+  setting for it.
 - pypdf, pdfplumber, and the URL / base64 paths are fast and have no ML
   overhead — use `pdf_info`, `pdf_toc`, `pdf_read_text`, and
   `pdf_find_tables` whenever Markdown isn't strictly needed.
@@ -161,10 +168,18 @@ result is ready and returns it directly.
 
 Tag-driven CI publishes to both PyPI (`flint-slating`) and GHCR (`ghcr.io/parkviewlab/flint-slating`):
 
+The release runs from the CLI in the `flint-slating-main` worktree, as the
+ParkviewLab handbook's `releases.md` gives it under "Cutting a release" and
+"The release's last step":
+
 ```bash
-# Bump version in pyproject.toml first, then:
-git tag v0.1.0
-git push origin v0.1.0
+git pull --ff-only                        # sync main
+git -C ../flint-slating-develop pull --ff-only   # sync develop
+git merge --no-ff develop                 # promote develop to main
+git bump <patch|minor|major|release|X.Y.Z>
+git release                               # annotated tag, derived from pyproject.toml
+git push --follow-tags                    # the tag push fires the release workflow
+git back-merge                            # the release's last step
 ```
 
 The release workflow refuses a tag that does not match `pyproject.toml`'s `version`, that still carries a dev marker (`.devN`), that is not on `origin/main`, or that is not greater than the previous release tag.
@@ -204,11 +219,15 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in this work by you shall be dual-licensed as above, without any
 additional terms or conditions. See [LICENSING.md](LICENSING.md).
 
-flint-slating only depends on permissive-licensed libraries; the CI
-`license-check` job enforces this on every PR. torch and torchvision are pinned
-to the [CPU-only PyTorch wheel index](https://download.pytorch.org/whl/cpu) so
-the distribution does not bundle NVIDIA's proprietary CUDA libraries. Inference
-runs on CPU on Linux/Windows and on MPS (Metal) on Apple Silicon. See
+flint-slating only depends on permissive-licensed libraries; the `licenses` job
+of `license-check.yml` enforces this on every PR. torch and torchvision are
+pinned to the [CPU-only PyTorch wheel index](https://download.pytorch.org/whl/cpu)
+for the GHCR image and for `uv sync` from a checkout (`uv.lock` resolves torch
+to the CPU wheels), so those do not bundle NVIDIA's proprietary CUDA libraries.
+A PyPI install (`uvx flint-slating`, `uv tool install flint-slating`) does not
+read that pin and gets PyPI's torch, which on Linux pulls NVIDIA's CUDA
+libraries unless torch is installed from the CPU index. Inference runs on CPU
+on Linux/Windows and on MPS (Metal) on Apple Silicon. See
 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for the per-dependency
 license breakdown.
 
