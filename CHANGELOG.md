@@ -20,6 +20,20 @@ section here, and uses the same content as the GitHub Release body.
 
 ## [Unreleased]
 
+## [v0.1.9] - 2026-09-30
+
+### Highlights
+
+This release pins `mcp[cli]` below 2.0, since mcp 2.x removes the low-level `Server` API this project depends on and fresh installs would fail at import. It also fixes Docling model handling: `DOCLING_ARTIFACTS_PATH` is now read only when an operator sets it, so on a fresh machine or container Docling downloads its models on first use instead of `pdf_read_markdown` and `pdf_read_chunks` returning `pdf_error`; `/admin/version` reports `null` for the path when it is unset. Documentation was corrected throughout, including the note that `ENABLE_OCR` has no effect (OCR follows Docling's default), the torch CPU pin, the release procedure, missing configuration rows, and the licence (`MIT OR Apache-2.0`).
+
+### Bug fixes
+
+- Keep mcp below 2, let Docling download its models, and correct the documents (#16)
+
+### Maintenance
+
+- Align with handbook v2.1.0 (#15)
+
 ## [v0.1.8] - 2026-09-27
 
 ### Highlights
