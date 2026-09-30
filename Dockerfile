@@ -29,10 +29,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # arm64 QEMU emulation when buildx is producing the multi-arch image,
 # which dominated wall-clock (~9 min and counting on v0.1.0). The first
 # request after container start pays the download cost instead.
-# DOCLING_ARTIFACTS_PATH points the cache at a stable location so an
-# operator can pre-populate it via volume mount if they want a hot start.
+# For a hot start, download the models into a mounted directory
+# (`docling-tools models download -o <dir>`) and set
+# DOCLING_ARTIFACTS_PATH to it; Docling never downloads into a set path.
 ENV PYTHONUNBUFFERED=1 \
-    DOCLING_ARTIFACTS_PATH=/opt/docling-models \
     OUTPUT_ROOT=/data/output \
     CACHE_ROOT=/data/cache \
     PORT=35833 \

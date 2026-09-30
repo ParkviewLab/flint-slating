@@ -33,12 +33,10 @@ services:
       #   PUBLIC_BASE_URL: "https://flint.example.com"
       PUBLIC_BASE_URL: "http://CHANGE-ME:35833"
 
-      # Docling layout model cache — baked into the image at build time.
-      DOCLING_ARTIFACTS_PATH: /opt/docling-models
-
-      # Set to "true" to enable Docling OCR (requires tesseract; not in
-      # this image — extend the Dockerfile or use a mount).
-      ENABLE_OCR: "false"
+      # Docling downloads its models on first use. For a hot start, put
+      # them in a mounted directory with `docling-tools models download
+      # -o <dir>` and set:
+      # DOCLING_ARTIFACTS_PATH: /models
 
     volumes:
       # Default: a docker-managed named volume.

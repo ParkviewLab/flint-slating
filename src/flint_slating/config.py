@@ -36,12 +36,12 @@ MAX_URL_PDF_BYTES: int = int(os.environ.get("MAX_URL_PDF_BYTES", str(200 * 1024 
 # than queuing a job. OCR runs always queue, regardless of page count.
 SYNC_PAGE_THRESHOLD: int = int(os.environ.get("SYNC_PAGE_THRESHOLD", "20"))
 
-# Where Docling stores its layout model. We export this into the process
-# environment too so docling itself picks it up.
-DOCLING_ARTIFACTS_PATH: Path = Path(
-    os.environ.get("DOCLING_ARTIFACTS_PATH") or (Path.home() / ".cache" / "docling")
-).resolve()
-os.environ.setdefault("DOCLING_ARTIFACTS_PATH", str(DOCLING_ARTIFACTS_PATH))
+# Where Docling reads its models from, only when the operator sets it.
+# Docling treats a set path as a directory that must already hold every
+# model, and never downloads into it; left unset, Docling downloads the
+# models on first use. So this is read, never exported with a default.
+_docling_artifacts = os.environ.get("DOCLING_ARTIFACTS_PATH")
+DOCLING_ARTIFACTS_PATH: Path | None = Path(_docling_artifacts).resolve() if _docling_artifacts else None
 
 ENABLE_OCR: bool = os.environ.get("ENABLE_OCR", "false").lower() in {"1", "true", "yes", "on"}
 
