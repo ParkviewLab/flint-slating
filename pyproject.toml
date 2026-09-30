@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 license-files = ["LICENSE-MIT", "LICENSE-APACHE"]
 authors = [{ name = "Gary Frattarola", email = "garyf@parkviewlab.ai" }]
 dependencies = [
-    "mcp[cli]>=1.27.0",
+    "mcp[cli]>=1.27,<2",
     "anyio",
     "fastapi",
     "uvicorn[standard]",
